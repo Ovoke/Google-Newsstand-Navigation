@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="NavigationToolBarr">
+    <declare-styleable name="NavigationToolBar">
         <attr name="headerBackgroundLayout" format="reference"/>
         <attr name="headerOnScreenItemCount" format="integer"/>
         <attr name="headerCollapsingBySelectDuration" format="integer"/>
