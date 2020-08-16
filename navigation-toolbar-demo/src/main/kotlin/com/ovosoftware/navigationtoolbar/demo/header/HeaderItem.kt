@@ -5,7 +5,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.ovosoftware.navigationtoolbar.HeaderLayout
-import com.ovosoftware.navigationtoolbar.demo.HeaderDataSet
 import com.ovosoftware.navigationtoolbar.demo.R
 
 class HeaderItem(view: View) : HeaderLayout.ViewHolder(view) {
@@ -17,7 +16,7 @@ class HeaderItem(view: View) : HeaderLayout.ViewHolder(view) {
     internal var overlayTitle: TextView? = null
     internal var overlayLine: View? = null
 
-    fun setContent(content: HeaderDataSet.ItemData, title: TextView?, line: View?) {
+    fun setContent(content: HeaderAdapter.HeaderDataSet.ItemData, title: TextView?, line: View?) {
         gradient.setBackgroundResource(content.gradient)
         Glide.with(background).load(content.background).into(background)
 

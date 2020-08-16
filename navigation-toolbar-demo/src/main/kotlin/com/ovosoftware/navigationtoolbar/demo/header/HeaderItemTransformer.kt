@@ -36,9 +36,10 @@ class HeaderItemTransformer(
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
                         headerOverlay.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     else
-                        headerOverlay.viewTreeObserver.removeGlobalOnLayoutListener (this)
+                        headerOverlay.viewTreeObserver.removeGlobalOnLayoutListener(this)
+
                     isOverlayLaidout = true
-                    transformOverlay(header)
+                    transformOverlay(header, lm)
                 }
             })
             return
@@ -48,7 +49,7 @@ class HeaderItemTransformer(
             return
         }
 
-        transformOverlay(header)
+        transformOverlay(header, lm)
     }
 
     private fun checkForChanges(header: HeaderLayout, headerBottom: Int): Boolean {
@@ -74,7 +75,7 @@ class HeaderItemTransformer(
         return true
     }
 
-    private fun transformOverlay(header: HeaderLayout) {
+    private fun transformOverlay(header: HeaderLayout, lm: HeaderLayoutManager) {
         val invertedBottomRatio = 1f - currentRatioBottomHalf
         val headerCenter = header.width / 2f
 
@@ -85,7 +86,7 @@ class HeaderItemTransformer(
             val holder = HeaderLayout.getChildViewHolder(card) as HeaderItem
 
             val cardWidth = card.width
-            val cardHeight = card.height
+            val cardHeight = card.height - lm.statusBarHeight
             val cardCenterX = card.x + cardWidth / 2
             val cardCenterY = card.y + cardHeight / 2
 

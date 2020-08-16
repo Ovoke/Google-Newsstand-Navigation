@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.ovosoftware.navigationtoolbar.HeaderLayout
-import com.ovosoftware.navigationtoolbar.demo.HeaderDataSet
 import com.ovosoftware.navigationtoolbar.demo.R
 
 class HeaderAdapter(
-        private val count: Int,
-        private val dataSet: HeaderDataSet,
-        overlay: FrameLayout) : HeaderLayout.Adapter<HeaderItem>() {
+    private val count: Int,
+    private val dataSet: HeaderDataSet,
+    overlay: FrameLayout) : HeaderLayout.Adapter<HeaderItem>() {
 
     private val textsLayout = overlay.findViewById<FrameLayout>(R.id.texts)
     private val linesLayout = overlay.findViewById<FrameLayout>(R.id.lines)
@@ -51,4 +50,13 @@ class HeaderAdapter(
         }
         return null
     }
+
+    interface HeaderDataSet {
+        data class ItemData(val gradient: Int,
+                            val background: Int,
+                            val title: String)
+
+        fun getItemData(pos: Int): ItemData
+    }
+
 }

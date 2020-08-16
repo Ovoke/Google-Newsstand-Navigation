@@ -1,12 +1,7 @@
 package com.ovosoftware.navigationtoolbar.demo
 
-interface HeaderDataSet {
-    data class ItemData(val gradient: Int,
-                        val background: Int,
-                        val title: String)
+import com.ovosoftware.navigationtoolbar.demo.header.HeaderAdapter.HeaderDataSet
 
-    fun getItemData(pos: Int): ItemData
-}
 
 interface PageDataSet {
 
