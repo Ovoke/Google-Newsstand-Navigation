@@ -1,5 +1,6 @@
 package com.ovosoftware.navigationtoolbar
 
+
 import com.ovosoftware.navigationtoolbar.HeaderLayoutManager.Point
 import kotlin.math.max
 import kotlin.math.min

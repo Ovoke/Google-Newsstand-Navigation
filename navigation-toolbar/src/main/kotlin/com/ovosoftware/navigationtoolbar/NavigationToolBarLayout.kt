@@ -77,11 +77,11 @@ class NavigationToolBarLayout : CoordinatorLayout {
     }
 
     /**
-     * Toolbar layout with id `@id/com_ovosoftware_toolbar`.
+     * Toolbar layout with id `@id/com_ramotion_toolbar`.
      */
     val toolBar: Toolbar
     /**
-     * AppBarLayout with id `@id/com_ovosoftware_app_bar`.
+     * AppBarLayout with id `@id/com_ramotion_app_bar`.
      */
     val appBarLayout: AppBarLayout
     /**
@@ -114,10 +114,10 @@ class NavigationToolBarLayout : CoordinatorLayout {
         (appBarLayout.layoutParams as CoordinatorLayout.LayoutParams).behavior = layoutManager.appBarBehavior
 
         attrs?.also {
-            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.NavigationToolBarr, defStyleAttr, 0)
+            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.NavigationToolBar, defStyleAttr, 0)
             try {
-                if (a.hasValue(R.styleable.NavigationToolBarr_headerBackgroundLayout)) {
-                    val backgroundId = a.getResourceId(R.styleable.NavigationToolBarr_headerBackgroundLayout, -1)
+                if (a.hasValue(R.styleable.NavigationToolBar_headerBackgroundLayout)) {
+                    val backgroundId = a.getResourceId(R.styleable.NavigationToolBar_headerBackgroundLayout, -1)
                     initBackgroundLayout(context, backgroundId)
                 }
             } finally {

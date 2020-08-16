@@ -242,13 +242,17 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
     private val centerIndex: Int
     private var topSnapDistance: Int = Int.MIN_VALUE
     private var bottomSnapDistance: Int = Int.MIN_VALUE
+    private var isStarted = false
 
-    var workBottom = context.resources.displayMetrics.heightPixels
+    val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+    var statusBarHeight = if (resourceId > 0) {
+        context.resources.getDimensionPixelSize(resourceId)
+    } else 0
+    var workBottom = context.resources.displayMetrics.heightPixels - statusBarHeight
     var workMiddle = workBottom / 2
     var workTop: Int = Int.MIN_VALUE
     var workHeight: Int = Int.MIN_VALUE
 
-    private var statusBarHeight:Int = Int.MIN_VALUE
     private var actionBarHeight:Int = Int.MIN_VALUE
 
     /**
@@ -403,16 +407,16 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
         var collapsingDuration = COLLAPSING_BY_SELECT_DURATION
 
         attrs?.also {
-            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.NavigationToolBarr, 0, 0)
+            val a = context.theme.obtainStyledAttributes(attrs, R.styleable.NavigationToolBar, 0, 0)
             try {
-                itemCount = a.getInteger(R.styleable.NavigationToolBarr_headerOnScreenItemCount, -1)
+                itemCount = a.getInteger(R.styleable.NavigationToolBar_headerOnScreenItemCount, -1)
                         .let { if (it <= 0) TAB_ON_SCREEN_COUNT else it }
-                gravity = VerticalGravity.fromInt(a.getInteger(R.styleable.NavigationToolBarr_headerVerticalGravity, VerticalGravity.RIGHT.value))
-                collapsingDuration = a.getInteger(R.styleable.NavigationToolBarr_headerCollapsingBySelectDuration, COLLAPSING_BY_SELECT_DURATION)
-                vScrollTopBorder = a.getBoolean(R.styleable.NavigationToolBarr_headerTopBorderAtSystemBar, false)
+                gravity = VerticalGravity.fromInt(a.getInteger(R.styleable.NavigationToolBar_headerVerticalGravity, VerticalGravity.RIGHT.value))
+                collapsingDuration = a.getInteger(R.styleable.NavigationToolBar_headerCollapsingBySelectDuration, COLLAPSING_BY_SELECT_DURATION)
+                vScrollTopBorder = a.getBoolean(R.styleable.NavigationToolBar_headerTopBorderAtSystemBar, false)
 
-                if (a.hasValue(R.styleable.NavigationToolBarr_headerVerticalItemWidth)) {
-                    verticalItemWidth = a.getDimension(R.styleable.NavigationToolBarr_headerVerticalItemWidth, verticalItemWidth)
+                if (a.hasValue(R.styleable.NavigationToolBar_headerVerticalItemWidth)) {
+                    verticalItemWidth = a.getDimension(R.styleable.NavigationToolBar_headerVerticalItemWidth, verticalItemWidth)
                 }
             } finally {
                 a.recycle()
@@ -425,11 +429,6 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
         centerIndex = tabOnScreenCount / 2
         verticalGravity = gravity
         collapsingBySelectDuration = collapsingDuration
-
-        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        statusBarHeight = if (resourceId > 0) {
-            context.resources.getDimensionPixelSize(resourceId)
-        } else 0
 
         val styledAttributes = context.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
         try {
@@ -448,7 +447,7 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
         workBottom = newWorkBottom
         workMiddle = workBottom / 2
 
-        workTop = actionBarHeight + statusBarHeight
+        workTop = actionBarHeight
         workHeight = workBottom - workTop
 
         topSnapDistance = (workTop + (workMiddle - workTop) / 2)
@@ -459,12 +458,19 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
         horizontalTabHeight = workMiddle
     }
 
+    private fun isLaidOut(parent: CoordinatorLayout): Boolean {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            return parent.isLaidOut
+        else
+            return isStarted
+    }
+
     override fun layoutDependsOn(parent: CoordinatorLayout, child: HeaderLayout, dependency: View): Boolean {
         return dependency is AppBarLayout
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, header: HeaderLayout, layoutDirection: Int): Boolean {
-        if (!ViewCompat.isLaidOut(parent)) {
+        if (!isLaidOut(parent)) {
             parent.onLayoutChild(header, layoutDirection)
 
             appBar = parent.findViewById(R.id.com_ovosoftware_app_bar)
@@ -475,6 +481,7 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
 
             updatePoints(header)
             fill(header)
+            isStarted = true
         }
 
         return true
@@ -992,7 +999,7 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
         vPoint = Point(vx, vy)
     }
 
-    private fun getPositionRatio() = appBar?.let { Math.max(0f, it.bottom / workBottom.toFloat()) } ?: 0f
+    private fun getPositionRatio() = appBar?.let {Math.max(0f, it.bottom / workBottom.toFloat()) } ?: 0f
 
     private tailrec fun getOrientation(getRatio: () -> Float, force: Boolean = false): Orientation {
         return if (force) {
@@ -1195,7 +1202,7 @@ class HeaderLayoutManager(context: Context, attrs: AttributeSet?)
             animator.addUpdateListener {
                 val value = it.animatedValue as Int
                 appBarBehavior.topAndBottomOffset = value
-                appBar?.also { ViewCompat.postOnAnimation(it, { it.requestLayout() }) }
+                appBar?.also { ViewCompat.postOnAnimation(it, { it.requestLayout() })}
             }
             animator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
