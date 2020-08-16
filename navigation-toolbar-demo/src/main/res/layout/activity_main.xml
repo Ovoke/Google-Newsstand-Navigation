@@ -5,7 +5,6 @@
     android:id="@+id/navigation_toolbar_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     app:headerBackgroundLayout="@layout/header_background"
     app:headerTopBorderAtSystemBar="true">
 
